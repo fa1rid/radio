@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="theme-color" content="#0b1220">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Radio">
+	<meta name="format-detection" content="telephone=no">
+	<title>Radio</title>
+	<link rel="icon" href="icon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<header class="top">
+		<div class="wrap">
+			<div class="top-row">
+				<h1 id="appTitle">Radio</h1>
+				<button id="reloadBtn" class="icon-btn" type="button"></button>
+			</div>
+			<select id="playlistSelect" class="field select" hidden></select>
+			<input id="search" class="field" type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+			<div class="filters">
+				<button class="chip active" type="button" data-filter="all" data-i18n="all"></button>
+				<button class="chip" type="button" data-filter="fav"><span aria-hidden="true">★ </span><span data-i18n="favorites"></span></button>
+				<span id="count" class="count"></span>
+			</div>
+		</div>
+	</header>
+
+	<main class="wrap">
+		<div id="notice" class="notice" role="alert" hidden>
+			<p id="noticeText"></p>
+			<button id="noticeBtn" class="btn" type="button" data-i18n="tryAgain"></button>
+		</div>
+		<div id="loading" class="loading"><div class="big-spinner"></div><p data-i18n="loading"></p></div>
+		<ul id="list" class="list"></ul>
+		<p id="empty" class="empty" hidden></p>
+	</main>
+
+	<footer id="player" class="player" hidden>
+		<div class="wrap player-inner">
+			<div class="np">
+				<span id="npLogo" class="logo np-logo"></span>
+				<div class="np-text">
+					<div id="npName" class="np-name" dir="auto"></div>
+					<div id="npStatus" class="np-status" role="status" aria-live="polite"></div>
+					<a id="openExt" class="btn ext-btn" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" hidden></a>
+				</div>
+				<button id="closeBtn" class="close-btn" type="button"></button>
+			</div>
+			<div class="controls">
+				<button id="prevBtn" class="ctrl" type="button"></button>
+				<button id="playBtn" class="ctrl play" type="button"></button>
+				<button id="nextBtn" class="ctrl" type="button"></button>
+			</div>
+		</div>
+	</footer>
+
+	<audio id="audio" preload="none" playsinline webkit-playsinline x-webkit-airplay="allow"></audio>
+	<script src="config.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
