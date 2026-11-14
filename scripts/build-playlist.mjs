@@ -59,7 +59,7 @@ async function fetchStations(hosts, cc) {
 	let lastErr;
 	for (const h of hosts) {
 		try {
-			const list = await getJson(`https://${h}/json/stations/bycountrycodeexact/${cc}?hidebroken=false&order=clickcount&reverse=true&limit=10000`, 30000);
+			const list = await getJson(`https://${h}/json/stations/bycountrycodeexact/${cc}?hidebroken=false&limit=10000`, 30000);
 			if (!Array.isArray(list)) throw new Error("unexpected response");
 			return list;
 		} catch (e) {
@@ -74,17 +74,30 @@ const clean = (s) => String(s || "").replace(/[\r\n]+/g, " ").replace(/\s+/g, " 
 const attr = (s) => clean(s).replace(/"/g, "'");
 const streamUrl = (s) => clean(s.url_resolved || s.url);
 
+// Fixed order (name, then link) so the file only changes when stations change.
+// Plain code-point comparison: same result on any machine/locale.
+function byNameThenUrl(a, b) {
+	const x = clean(a.name).toLowerCase(), y = clean(b.name).toLowerCase();
+	if (x !== y) return x < y ? -1 : 1;
+	const u = streamUrl(a), v = streamUrl(b);
+	return u < v ? -1 : u > v ? 1 : 0;
+}
+
 function select(list, days) {
 	const cutoff = Date.now() - days * 86400000;
 	const seen = new Set();
-	return list.filter((s) => {
-		const url = streamUrl(s);
-		if (!/^https?:\/\//i.test(url) || !clean(s.name) || seen.has(url)) return false;
-		const okRecently = s.lastcheckok === 1 || Date.parse(s.lastcheckoktime_iso8601 || "") >= cutoff;
-		if (!okRecently) return false;
-		seen.add(url);
-		return true;
-	});
+	return list
+		.filter((s) => {
+			if (!/^https?:\/\//i.test(streamUrl(s)) || !clean(s.name)) return false;
+			return s.lastcheckok === 1 || Date.parse(s.lastcheckoktime_iso8601 || "") >= cutoff;
+		})
+		.sort(byNameThenUrl) // sort before de-duplicating so the same entry is always kept
+		.filter((s) => {
+			const url = streamUrl(s);
+			if (seen.has(url)) return false;
+			seen.add(url);
+			return true;
+		});
 }
 
 // No timestamps, so the file only changes when stations change.

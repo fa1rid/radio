@@ -5,7 +5,6 @@
 	var CFG = Object.assign({
 		appTitle: "Radio",
 		language: "auto",
-		sortStations: true,
 		playlists: [],
 		hlsLibraryUrl: "https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js",
 		playlistTimeoutMs: 15000,
@@ -217,12 +216,10 @@
 		});
 		list = list.map(applyOverride).filter(Boolean);
 		list.forEach(function (s) { s.search = searchNorm(s.name + " " + s.group); });
-		if (CFG.sortStations) {
-			list.sort(function (a, b) {
-				try { return a.name.localeCompare(b.name, [lang, "ar", "en"], { sensitivity: "base", numeric: true }); }
-				catch (e) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; }
-			});
-		}
+		list.sort(function (a, b) {
+			try { return a.name.localeCompare(b.name, [lang, "ar", "en"], { sensitivity: "base", numeric: true }); }
+			catch (e) { return a.name < b.name ? -1 : a.name > b.name ? 1 : 0; }
+		});
 		return list;
 	}
 

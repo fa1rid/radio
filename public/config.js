@@ -15,7 +15,6 @@
 window.RADIO_CONFIG = {
 	appTitle: "Radio",
 	language: "auto",          // "auto" (follows the phone language), "en" or "ar"
-	sortStations: true,        // sort alphabetically; false = keep playlist order
 
 	/*
 	 * Fix or adjust individual stations from any playlist. Key = station name exactly as in the playlist
